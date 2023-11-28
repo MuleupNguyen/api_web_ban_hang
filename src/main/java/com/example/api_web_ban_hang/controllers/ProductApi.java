@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.api_web_ban_hang.models.Product;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/v1/products")
 public class ProductApi {
 
     @Autowired

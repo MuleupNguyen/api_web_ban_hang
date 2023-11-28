@@ -15,6 +15,7 @@ import com.example.api_web_ban_hang.models.AuthRequest;
 import com.example.api_web_ban_hang.repos.UserRepository;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 
 
 @RestController
@@ -35,7 +36,7 @@ public class AuthApi {
 
             User user = (User) authentication.getPrincipal();
             String accessToken = jwtUtil.generateAccessToken(user);
-            AuthResponse response = new AuthResponse(user.getUsername(), accessToken);
+            AuthResponse response = new AuthResponse(user.getUsername(), accessToken, "24 hours");
 
             return ResponseEntity.ok().body(response);
 
@@ -46,11 +47,12 @@ public class AuthApi {
     }
     @PostMapping("/register")
     public ResponseEntity<User> create(@RequestBody @Valid User user) {
+        System.out.println(user);
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String password = passwordEncoder.encode(user.getPassword());
         user.setPassword(password);
+        user.setTimeCreated(LocalDateTime.now());
         User saveUser = userRepository.save(user);
         return new ResponseEntity(saveUser, HttpStatus.OK);
-
     }
 }
