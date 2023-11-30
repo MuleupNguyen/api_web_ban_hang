@@ -26,7 +26,7 @@ public class AuthApi {
     @Autowired
     UserRepository userRepository;
 
-    @PostMapping("/auth/login")
+    @PostMapping("/api/authentication/login-user")
     public ResponseEntity<?> login(@RequestBody @Valid AuthRequest request) {
         try {
             Authentication authentication = authManager.authenticate(
@@ -45,7 +45,7 @@ public class AuthApi {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
-    @PostMapping("/register")
+    @PostMapping("/api/register")
     public ResponseEntity<User> create(@RequestBody @Valid User user) {
         System.out.println(user);
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
