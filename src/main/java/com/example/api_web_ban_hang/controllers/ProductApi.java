@@ -19,7 +19,7 @@ public class ProductApi {
     private ProductRepository repo;
 
     @GetMapping
-    public ResponseObject create(@RequestBody @Valid Product product) {
+    public ResponseObject findAllProducts() {
         return new ResponseObject("OK", "Lấy ra danh sách sản phẩm!", repo.findAll());
     }
 
