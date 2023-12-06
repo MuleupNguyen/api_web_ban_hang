@@ -28,7 +28,7 @@ BEGIN
   DECLARE i INT DEFAULT 1;
   DECLARE teams VARCHAR(255);
 
-  WHILE i < 5000 DO
+  WHILE i < 1000 DO
     -- Chọn một đội bóng châu Âu ngẫu nhiên
     SET teams = CASE
       WHEN RAND() < 0.04 THEN 'Real Madrid'
@@ -94,7 +94,7 @@ CREATE PROCEDURE GenerateSizeProducts()
 BEGIN
     DECLARE counter INT DEFAULT 1;
 
-    WHILE counter < 5000 DO
+    WHILE counter < 1000 DO
         -- Chọn một sản phẩm và size ngẫu nhiên
         SET @product_id = counter;
         SET @size = CASE ROUND(RAND() * 5)
@@ -128,7 +128,7 @@ CREATE PROCEDURE GenerateImageProducts()
 BEGIN
     DECLARE counter INT DEFAULT 1;
 
-    WHILE counter < 5000 DO
+    WHILE counter < 1000 DO
         -- Chọn một sản phẩm và size ngẫu nhiên
         SET @product_id = counter;
         SET @path = CASE ROUND(RAND() * 17)
@@ -174,7 +174,7 @@ CREATE PROCEDURE GenerateHistoryPriceProducts()
 BEGIN
     DECLARE counter INT DEFAULT 1;
 
-    WHILE counter < 5000 DO
+    WHILE counter < 1000 DO
         -- Chọn một sản phẩm và size ngẫu nhiên
         SET @product_id = counter;
         -- Thêm bản ghi vào bảng size_products
@@ -194,3 +194,5 @@ DELIMITER ;
 
 -- Gọi stored procedure để tạo dữ liệu
 CALL GenerateHistoryPriceProducts();
+
+SELECT * FROM products WHERE id_brand = 1
