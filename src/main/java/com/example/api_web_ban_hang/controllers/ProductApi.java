@@ -1,15 +1,12 @@
 package com.example.api_web_ban_hang.controllers;
-import java.net.URI;
-import java.util.List;
-
-import javax.validation.Valid;
 
 import com.example.api_web_ban_hang.models.ResponseObject;
 import com.example.api_web_ban_hang.repos.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import com.example.api_web_ban_hang.models.Product;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
 @RequestMapping("/api/products")
