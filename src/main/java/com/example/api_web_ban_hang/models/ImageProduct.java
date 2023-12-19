@@ -1,4 +1,6 @@
 package com.example.api_web_ban_hang.models;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -13,12 +15,25 @@ public class ImageProduct {
     @Column(name = "path", nullable = false)
     private String path;
 
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "id_product", nullable = false)
+    @JoinColumn(name = "id_product")
     private Product product;
+
+//    @ManyToOne
+//    @JoinColumn(name = "id_product", nullable = false)
+//    private Product product;
 
     @Column(name = "time_created", nullable = false)
     private LocalDateTime timeCreated;
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
 
     // Getters and setters...
 
@@ -37,14 +52,14 @@ public class ImageProduct {
     public void setPath(String path) {
         this.path = path;
     }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
+//
+//    public Product getProduct() {
+//        return product;
+//    }
+//
+//    public void setProduct(Product product) {
+//        this.product = product;
+//    }
 
     public LocalDateTime getTimeCreated() {
         return timeCreated;
