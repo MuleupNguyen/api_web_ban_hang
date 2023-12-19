@@ -1,11 +1,16 @@
 package com.example.api_web_ban_hang.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -17,7 +22,7 @@ public class User implements UserDetails {
 
     @Column(name = "username", unique = true, nullable = false)
     private String username;
-
+    @JsonIgnore
     @Column(name = "password", nullable = false)
     private String password;
 
@@ -30,11 +35,25 @@ public class User implements UserDetails {
     @Column(name = "path_img_avatar")
     private String pathImgAvatar;
 
+    @CreationTimestamp
     @Column(name = "time_created", nullable = false)
     private LocalDateTime timeCreated;
 
     @Column(name = "time_updated")
     private LocalDateTime timeUpdated;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private Set<Comment> comments = new HashSet<>();
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
+    }
+
     public User() { }
 
     public User(String username, String password) {

@@ -1,8 +1,13 @@
 package com.example.api_web_ban_hang.models;
 
+import org.hibernate.annotations.Fetch;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "products")
@@ -41,7 +46,29 @@ public class Product {
     @Column(name = "time_created", nullable = false)
     private LocalDateTime timeCreated;
 
-    // Getters and setters...
+    @OneToMany(mappedBy = "product", orphanRemoval = true)
+    private Set<ImageProduct> imageProducts = new HashSet<>();
+
+    @OneToMany(mappedBy = "product", orphanRemoval = true)
+    private Set<Comment> comments = new HashSet<>();
+
+    public Set<ImageProduct> getImageProducts() {
+        return imageProducts;
+    }
+
+    public void setImageProducts(Set<ImageProduct> imageProducts) {
+        this.imageProducts = imageProducts;
+    }
+
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
+    }
+// Getters and setters...
 
 
     public Long getId() {
