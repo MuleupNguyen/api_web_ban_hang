@@ -94,5 +94,40 @@ public class ProductService implements IGetProductService, ICountProductService 
                 .setParameter("statusProductId", status_product);
 
         return ((Number) query.getSingleResult()).intValue();
+
     }
+
+    /**
+     * Lấy ra danh sách sản phẩm theo loại,thương hiệu và giới tính
+     * <p>
+     * VD:
+     * + Lấy ra danh sách áo đá banh của hãng Nike dành cho Nam
+     * + Lấy ra danh sách áo đá banh của hãng Adidas dành cho Nữ
+     *
+     * @param type_product : loại sản phẩm
+     * @param brand        : thương hiệu
+     * @param sex          : giới tính
+     */
+    @Override
+    public List<ProductDTO_Ver1> getListProductBy_TypeAndBrandAndSex(int type_product, int brand, int sex, int page, int page_size) {
+        return null;
+    }
+
+    /**
+     * Đếm số lượng sản phẩm theo loại,thương hiệu và giới tính
+     * <p>
+     * VD:
+     * + Đếm số lượng sản phẩm áo đá banh của hãng Nike dành cho Nam
+     * + Đếm số lượng sản phẩm áo đá banh của hãng Adidas dành cho Nữ
+     *
+     * @param type_product : loại sản phẩm
+     * @param brand        : thương hiệu
+     * @param sex          : giới tính
+     */
+    @Override
+    public int countProductsBy_TypeAndBrandAndSex(int type_product, int brand, int sex) {
+        return 0;
+    }
+
+
 }
