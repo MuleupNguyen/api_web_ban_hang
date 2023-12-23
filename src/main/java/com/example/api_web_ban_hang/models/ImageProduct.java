@@ -1,4 +1,5 @@
 package com.example.api_web_ban_hang.models;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -24,7 +25,7 @@ public class ImageProduct {
 //    @JoinColumn(name = "id_product", nullable = false)
 //    private Product product;
 
-    @Column(name = "time_created", nullable = false)
+    @Column(name = "time_created", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime timeCreated;
 
     public Product getProduct() {
