@@ -32,10 +32,14 @@ public class ProductClothesController {
                                                                            @RequestParam(defaultValue = "15") int pageSize) {
         try {
             var validFilter = new PaginationFilter(page, pageSize);
+
             var data = _productService.getListProductByTypeAndStatus(TypeProduct.AO_DAU, StatusProduct.MOI, validFilter.current_page, validFilter.page_size);
-            return new PagedResponse_Ver1<List<ProductDTO_Ver1>>(data, validFilter.current_page, validFilter.page_size, 1000);
+
+            var total_items = _productService.countProductsByTypeAndStatus(TypeProduct.AO_DAU, StatusProduct.MOI);
+
+            return new PagedResponse_Ver1<List<ProductDTO_Ver1>>(data, validFilter.current_page, validFilter.page_size, total_items);
+
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }

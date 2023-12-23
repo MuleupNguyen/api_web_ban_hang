@@ -18,4 +18,5 @@ public class ProductDTO_Ver1 {
       public BigDecimal listed_price;
       public BigDecimal promotional_price;
       public List<ImageProductDTO_Ver1> list_image;
+      public int id_status_product;
 }

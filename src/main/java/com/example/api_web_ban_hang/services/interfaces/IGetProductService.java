@@ -1,4 +1,4 @@
-package com.example.api_web_ban_hang.services;
+package com.example.api_web_ban_hang.services.interfaces;
 
 import com.example.api_web_ban_hang.dto.ProductDTO_Ver1;
 
@@ -16,6 +16,5 @@ public interface IGetProductService {
      * + Lấy ra danh sách áo đá banh đang có trạng thái MỚI
      * + Lấy ra danh sách áo đá banh đang có trạng thái HOT
      * */
-    List<ProductDTO_Ver1> getListProductByTypeAndStatus(int type_product, int status, int page, int page_size);
-
+    List<ProductDTO_Ver1> getListProductByTypeAndStatus(int type_product, int status_product, int page, int page_size);
 }
