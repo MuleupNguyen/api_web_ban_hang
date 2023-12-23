@@ -1,6 +1,7 @@
 package com.example.api_web_ban_hang.models;
 
 import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -46,7 +47,8 @@ public class Product {
     @Column(name = "time_created", nullable = false)
     private LocalDateTime timeCreated;
 
-    @OneToMany(mappedBy = "product", orphanRemoval = true)
+    @OneToMany(mappedBy = "product", orphanRemoval = true, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.JOIN)
     private Set<ImageProduct> imageProducts = new HashSet<>();
 
     @OneToMany(mappedBy = "product", orphanRemoval = true)
