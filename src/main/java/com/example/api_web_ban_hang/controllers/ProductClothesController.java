@@ -1,5 +1,7 @@
 package com.example.api_web_ban_hang.controllers;
 
+import com.example.api_web_ban_hang.common.Brand;
+import com.example.api_web_ban_hang.common.Sex;
 import com.example.api_web_ban_hang.common.StatusProduct;
 import com.example.api_web_ban_hang.common.TypeProduct;
 import com.example.api_web_ban_hang.dto.PagedResponse_Ver1;
@@ -15,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
-import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 
 /**
  * Controller này dùng để handle các API liên quan đến sản phẩm quần áo
@@ -99,4 +99,144 @@ public class ProductClothesController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+    @GetMapping("/ds-ao-da-banh-nike-nam")
+    public ResponseEntity<PagedResponse_Ver1<List<ProductDTO_Ver1>>> getListSoccerShirtNikeForMen(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "15") int pageSize) {
+        try {
+            var validFilter = new PaginationFilter(page, pageSize);
+
+            var data = _productService.getListProductBy_TypeAndBrandAndSex(TypeProduct.AO_DAU, Brand.NIKE, Sex.NAM, validFilter.current_page, validFilter.page_size);
+
+            if (data == null || data.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            var total_items = _productService.countProductsBy_TypeAndBrandAndSex(TypeProduct.AO_DAU, Brand.NIKE, Sex.NAM);
+
+            return ResponseEntity.ok(new PagedResponse_Ver1<>(data, validFilter.current_page, validFilter.page_size, total_items));
+
+        } catch (Exception e) {
+            // Xử lý lỗi và trả về mã trạng thái 500
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping("/ds-ao-da-banh-adidas-nam")
+    public ResponseEntity<PagedResponse_Ver1<List<ProductDTO_Ver1>>> getListSoccerShirtAdidasForMen(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "15") int pageSize) {
+        try {
+            var validFilter = new PaginationFilter(page, pageSize);
+
+            var data = _productService.getListProductBy_TypeAndBrandAndSex(TypeProduct.AO_DAU, Brand.ADIDAS, Sex.NAM, validFilter.current_page, validFilter.page_size);
+
+            if (data == null || data.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            var total_items = _productService.countProductsBy_TypeAndBrandAndSex(TypeProduct.AO_DAU, Brand.ADIDAS, Sex.NAM);
+
+            return ResponseEntity.ok(new PagedResponse_Ver1<>(data, validFilter.current_page, validFilter.page_size, total_items));
+
+        } catch (Exception e) {
+            // Xử lý lỗi và trả về mã trạng thái 500
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping("/ds-ao-da-banh-puma-nam")
+    public ResponseEntity<PagedResponse_Ver1<List<ProductDTO_Ver1>>> getListSoccerShirtPumaForMen(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "15") int pageSize) {
+        try {
+            var validFilter = new PaginationFilter(page, pageSize);
+
+            var data = _productService.getListProductBy_TypeAndBrandAndSex(TypeProduct.AO_DAU, Brand.PUMA, Sex.NAM, validFilter.current_page, validFilter.page_size);
+
+            if (data == null || data.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            var total_items = _productService.countProductsBy_TypeAndBrandAndSex(TypeProduct.AO_DAU, Brand.PUMA, Sex.NAM);
+
+            return ResponseEntity.ok(new PagedResponse_Ver1<>(data, validFilter.current_page, validFilter.page_size, total_items));
+
+        } catch (Exception e) {
+            // Xử lý lỗi và trả về mã trạng thái 500
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping("/ds-ao-da-banh-nike-nu")
+    public ResponseEntity<PagedResponse_Ver1<List<ProductDTO_Ver1>>> getListSoccerNikeForWoMen(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "15") int pageSize) {
+        try {
+            var validFilter = new PaginationFilter(page, pageSize);
+
+            var data = _productService.getListProductBy_TypeAndBrandAndSex(TypeProduct.AO_DAU, Brand.NIKE, Sex.NU, validFilter.current_page, validFilter.page_size);
+
+            if (data == null || data.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            var total_items = _productService.countProductsBy_TypeAndBrandAndSex(TypeProduct.AO_DAU, Brand.NIKE, Sex.NU);
+
+            return ResponseEntity.ok(new PagedResponse_Ver1<>(data, validFilter.current_page, validFilter.page_size, total_items));
+
+        } catch (Exception e) {
+            // Xử lý lỗi và trả về mã trạng thái 500
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping("/ds-ao-da-banh-adidas-nu")
+    public ResponseEntity<PagedResponse_Ver1<List<ProductDTO_Ver1>>> getListSoccerAdidasForWoMen(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "15") int pageSize) {
+        try {
+            var validFilter = new PaginationFilter(page, pageSize);
+
+            var data = _productService.getListProductBy_TypeAndBrandAndSex(TypeProduct.AO_DAU, Brand.ADIDAS, Sex.NU, validFilter.current_page, validFilter.page_size);
+
+            if (data == null || data.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            var total_items = _productService.countProductsBy_TypeAndBrandAndSex(TypeProduct.AO_DAU, Brand.ADIDAS, Sex.NU);
+
+            return ResponseEntity.ok(new PagedResponse_Ver1<>(data, validFilter.current_page, validFilter.page_size, total_items));
+
+        } catch (Exception e) {
+            // Xử lý lỗi và trả về mã trạng thái 500
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping("/ds-ao-da-banh-puma-nu")
+    public ResponseEntity<PagedResponse_Ver1<List<ProductDTO_Ver1>>> getListSoccerPumaForWoMen(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "15") int pageSize) {
+        try {
+            var validFilter = new PaginationFilter(page, pageSize);
+
+            var data = _productService.getListProductBy_TypeAndBrandAndSex(TypeProduct.AO_DAU, Brand.PUMA, Sex.NU, validFilter.current_page, validFilter.page_size);
+
+            if (data == null || data.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            var total_items = _productService.countProductsBy_TypeAndBrandAndSex(TypeProduct.AO_DAU, Brand.PUMA, Sex.NU);
+
+            return ResponseEntity.ok(new PagedResponse_Ver1<>(data, validFilter.current_page, validFilter.page_size, total_items));
+
+        } catch (Exception e) {
+            // Xử lý lỗi và trả về mã trạng thái 500
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+
 }
