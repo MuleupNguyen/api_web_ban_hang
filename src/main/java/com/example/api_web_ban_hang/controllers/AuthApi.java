@@ -10,11 +10,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.api_web_ban_hang.models.AuthResponse;
-import com.example.api_web_ban_hang.models.User;
+import com.example.api_web_ban_hang.models.entities.User;
 import com.example.api_web_ban_hang.models.AuthRequest;
 import com.example.api_web_ban_hang.repos.UserRepository;
 
-import java.net.URI;
 import java.time.LocalDateTime;
 
 

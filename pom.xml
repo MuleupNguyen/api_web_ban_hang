@@ -65,6 +65,12 @@
             <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
+            <scope>annotationProcessor</scope>
+        </dependency>
     </dependencies>
 
     <build>
