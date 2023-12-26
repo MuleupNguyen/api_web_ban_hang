@@ -1,5 +1,4 @@
 package com.example.api_web_ban_hang.jwts;
-import java.util.Date;
 
 import com.example.api_web_ban_hang.models.entities.User;
 import io.jsonwebtoken.*;
@@ -7,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 
 @Component
@@ -17,6 +18,7 @@ public class JwtTokenUtil {
     private String SECRET_KEY;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenUtil.class);
+
     public String generateAccessToken(User user) {
         return Jwts.builder()
                 .setSubject(String.format("%s,%s", user.getId(), user.getUsername()))

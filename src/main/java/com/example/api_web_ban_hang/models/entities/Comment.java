@@ -1,5 +1,7 @@
-package com.example.api_web_ban_hang.models;
+package com.example.api_web_ban_hang.models.entities;
 
+import com.example.api_web_ban_hang.models.entities.Product;
+import com.example.api_web_ban_hang.models.entities.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
