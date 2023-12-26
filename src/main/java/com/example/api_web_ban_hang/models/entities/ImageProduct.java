@@ -1,6 +1,5 @@
-package com.example.api_web_ban_hang.models;
+package com.example.api_web_ban_hang.models.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,9 +19,8 @@ public class ImageProduct {
     @Column(name = "path", nullable = false)
     private String path;
 
-    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "id_product")
+    @JoinColumn(name = "id_product", nullable = false)
     private Product product;
 
     @Column(name = "time_created", nullable = false)

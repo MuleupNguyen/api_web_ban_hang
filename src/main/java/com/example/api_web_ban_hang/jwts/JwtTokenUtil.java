@@ -1,7 +1,7 @@
 package com.example.api_web_ban_hang.jwts;
 import java.util.Date;
 
-import com.example.api_web_ban_hang.models.User;
+import com.example.api_web_ban_hang.models.entities.User;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

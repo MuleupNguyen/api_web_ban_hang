@@ -1,15 +1,11 @@
-package com.example.api_web_ban_hang.models;
+package com.example.api_web_ban_hang.models.entities;
 
-import com.example.api_web_ban_hang.models.entities.Brand;
-import com.example.api_web_ban_hang.models.entities.TypeProduct;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -30,10 +26,10 @@ public class Product {
     @Column(name = "id_status_product", nullable = false)
     private int idStatusProduct;
 
-    @Column(name = "listed_price", nullable = false, precision = 65, scale = 30)
+    @Column(name = "listed_price", nullable = false, precision = 65, scale = 4)
     private BigDecimal listedPrice;
 
-    @Column(name = "promotional_price", nullable = false, precision = 65, scale = 30)
+    @Column(name = "promotional_price", nullable = false, precision = 65, scale = 4)
     private BigDecimal promotionalPrice;
 
     @ManyToOne
@@ -49,10 +45,4 @@ public class Product {
 
     @Column(name = "time_created", nullable = false)
     private LocalDateTime timeCreated;
-
-    @OneToMany(mappedBy = "product", orphanRemoval = true)
-    private Set<ImageProduct> imageProducts = new HashSet<>();
-
-    @OneToMany(mappedBy = "product", orphanRemoval = true)
-    private Set<Comment> comments = new HashSet<>();
 }
