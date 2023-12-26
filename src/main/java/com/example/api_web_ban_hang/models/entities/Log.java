@@ -1,6 +1,5 @@
 package com.example.api_web_ban_hang.models.entities;
 
-import com.example.api_web_ban_hang.models.entities.User;
 import lombok.Getter;
 import lombok.Setter;
 
