@@ -1,26 +1,30 @@
 package com.example.api_web_ban_hang.controllers;
-import javax.validation.Valid;
 
 import com.example.api_web_ban_hang.jwts.JwtTokenUtil;
+import com.example.api_web_ban_hang.models.AuthRequest;
+import com.example.api_web_ban_hang.models.AuthResponse;
+import com.example.api_web_ban_hang.models.entities.User;
+import com.example.api_web_ban_hang.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
-import org.springframework.security.authentication.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.example.api_web_ban_hang.models.AuthResponse;
-import com.example.api_web_ban_hang.models.User;
-import com.example.api_web_ban_hang.models.AuthRequest;
-import com.example.api_web_ban_hang.repos.UserRepository;
-
-import java.net.URI;
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 
 
 @RestController
 public class AuthApi {
-    @Autowired AuthenticationManager authManager;
+    @Autowired
+    AuthenticationManager authManager;
     @Autowired
     JwtTokenUtil jwtUtil;
     @Autowired
@@ -45,6 +49,7 @@ public class AuthApi {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
+
     @PostMapping("/api/register")
     public ResponseEntity<User> create(@RequestBody @Valid User user) {
         System.out.println(user);

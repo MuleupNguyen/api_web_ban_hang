@@ -1,3 +1,4 @@
+USE db_web_ban_hang;
 
 INSERT INTO `brands` VALUES (1, 'NIKE');
 INSERT INTO `brands` VALUES (2, 'ADIDAS');

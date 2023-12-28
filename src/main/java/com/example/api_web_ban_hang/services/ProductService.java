@@ -2,8 +2,8 @@ package com.example.api_web_ban_hang.services;
 
 import com.example.api_web_ban_hang.dto.ImageProductDTO_Ver1;
 import com.example.api_web_ban_hang.dto.ProductDTO_Ver1;
-import com.example.api_web_ban_hang.models.ImageProduct;
-import com.example.api_web_ban_hang.models.Product;
+import com.example.api_web_ban_hang.models.entities.ImageProduct;
+import com.example.api_web_ban_hang.models.entities.Product;
 import com.example.api_web_ban_hang.services.interfaces.ICountProductService;
 import com.example.api_web_ban_hang.services.interfaces.IGetProductService;
 import org.springframework.stereotype.Service;

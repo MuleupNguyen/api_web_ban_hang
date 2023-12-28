@@ -1,5 +1,6 @@
 package com.example.api_web_ban_hang.repos;
-import com.example.api_web_ban_hang.models.Product;
+
+import com.example.api_web_ban_hang.models.entities.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
