@@ -56,4 +56,7 @@ public class Product {
 
     @OneToMany(mappedBy = "product", orphanRemoval = true)
     private Set<Comment> comments = new HashSet<>();
+    @OneToMany(mappedBy = "product", orphanRemoval = true, fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
+    private Set<SizeProduct> listSizes = new HashSet<>();
 }
