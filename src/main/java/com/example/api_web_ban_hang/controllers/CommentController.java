@@ -7,9 +7,7 @@ import com.example.api_web_ban_hang.models.entities.User;
 import com.example.api_web_ban_hang.models.request.CommentRequest;
 import com.example.api_web_ban_hang.repos.ProductRepository;
 import com.example.api_web_ban_hang.repos.UserRepository;
-import com.example.api_web_ban_hang.services.ProductService;
 import com.example.api_web_ban_hang.services.interfaces.CommentService;
-import com.example.api_web_ban_hang.services.interfaces.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,17 +29,11 @@ public class CommentController {
 
     @PostMapping()
     public ResponseEntity<ResponseObject> addComment(@RequestBody CommentRequest rqcomment) {
-        System.out.println(rqcomment.getContent());
-        System.out.println(rqcomment.getStar());
-        System.out.println(rqcomment.getId_user());
-        System.out.println(rqcomment.getId_product());
-        User user = Optional.of(userRepository
-                        .findById(rqcomment.getId_user()))
+
+        User user = Optional.of(userRepository.findById(rqcomment.getId_user()))
                 .orElse(null).get();
-        Product product = Optional.of(productRepository
-                        .findById(rqcomment.getId_product()))
-                .orElse(null)
-                .get();
+        Product product = Optional.of(productRepository.findById(rqcomment.getId_product()))
+                .orElse(null).get();
         Comment comment = new Comment();
         comment.setStar(rqcomment.getStar());
         comment.setContent(rqcomment.getContent());
@@ -52,9 +44,20 @@ public class CommentController {
                         new ResponseObject(
                                 HttpStatus.OK.name(),
                                 HttpStatus.OK.getReasonPhrase(),
-                                commentService.addComment(
-                                        comment
-                                )))
+                                commentService.addComment( comment )))
                 ).get();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseObject> findCommentByIdProduct(@PathVariable(name = "id") long id) {
+        return Optional
+                .of(ResponseEntity.ok()
+                        .body(new ResponseObject(HttpStatus.OK.name(),
+                                HttpStatus.OK.getReasonPhrase(),
+                                commentService.findCommentByIdProduct(id))))
+                .orElse(ResponseEntity.ok()
+                        .body(new ResponseObject(HttpStatus.NOT_FOUND.name(),
+                                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                                "")));
     }
 }

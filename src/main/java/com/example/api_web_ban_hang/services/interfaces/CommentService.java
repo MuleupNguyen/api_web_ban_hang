@@ -9,6 +9,6 @@ public interface CommentService {
 
     @Modifying
     Comment addComment(Comment comment);
-    List<Comment> findAllComments();
+    List<Comment> findCommentByIdProduct(long id);
 
 }

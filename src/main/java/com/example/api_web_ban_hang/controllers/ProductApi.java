@@ -5,7 +5,6 @@ import com.example.api_web_ban_hang.services.interfaces.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -14,15 +13,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/products")
 public class ProductApi {
-    // Ví dụ
     @Autowired
     private IProductService productService;
-
-    @GetMapping
-    public ResponseObject findAllProducts() {
-        return new ResponseObject("OK", "Lấy ra danh sách sản phẩm!", productService.findAll());
-    }
-
     @GetMapping("/infor-product/{id}")
     public ResponseEntity<ResponseObject> findProductById(@PathVariable(name = "id") long id) {
         return Optional

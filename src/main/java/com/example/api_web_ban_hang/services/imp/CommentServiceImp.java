@@ -4,12 +4,10 @@ import com.example.api_web_ban_hang.models.entities.Comment;
 import com.example.api_web_ban_hang.repos.CommentRepository;
 import com.example.api_web_ban_hang.services.interfaces.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentServiceImp implements CommentService {
@@ -20,12 +18,16 @@ public class CommentServiceImp implements CommentService {
     @Override
     public Comment addComment(Comment comment) {
         return Optional
-                .ofNullable(commentRepository.save(comment))
+                .of(commentRepository.save(comment))
                 .orElseThrow(() -> new RuntimeException("Failed to add comment"));
     }
 
+
     @Override
-    public List<Comment> findAllComments() {
-        return commentRepository.findAll(Sort.by("star").descending());
+    public List<Comment> findCommentByIdProduct(long id) {
+        return Optional.of(commentRepository.findByProduct_Id(id)
+                .stream()
+                .sorted(Comparator.comparing(Comment::getStar).reversed())
+                .collect(Collectors.toList())).orElse(null);
     }
 }
