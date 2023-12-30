@@ -29,7 +29,7 @@ public class ProductServiceImp implements IProductService {
     @Override
     public List<ProductDTO> findByNameProduct(String name) {
 
-        return Optional.ofNullable(productRepository.findByNameProduct(name))
+        return Optional.ofNullable(productRepository.findByNameContainingIgnoreCase(name))
                 .orElse(Collections.emptyList())
                 .stream()
                 .map(MapperProduct::mapperProductToDTO)
