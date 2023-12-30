@@ -9,40 +9,31 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-
 @RestController
 @RequestMapping("/api/products")
+@CrossOrigin("*")
 public class ProductApi {
-    @Autowired
-    private IProductService productService;
-    @GetMapping("/infor-product/{id}")
-    public ResponseEntity<ResponseObject> findProductById(@PathVariable(name = "id") long id) {
-        return Optional
-                .of(ResponseEntity.ok().body(new ResponseObject(
-                        HttpStatus.OK.name(),
-                        HttpStatus.OK.getReasonPhrase(),
-                        productService.findById(id))))
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(new ResponseObject(HttpStatus.NOT_FOUND.name(),
-                                HttpStatus.NOT_FOUND.getReasonPhrase(),
-                                "")));
-    }
+	@Autowired
+	private IProductService productService;
 
-    @GetMapping("/search")
-    public ResponseEntity<ResponseObject> findProductById(@RequestParam(name = "name") String input) {
-        return Optional
-                .of(ResponseEntity.ok().body(ResponseObject.builder()
-                        .object(productService.findByNameProduct(input))
-                        .status(HttpStatus.OK.name())
-                        .message(HttpStatus.OK.getReasonPhrase())
-                        .build()))
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(ResponseObject.builder()
-                                .object("")
-                                .status(HttpStatus.NOT_FOUND.name())
-                                .message(HttpStatus.NOT_FOUND.getReasonPhrase())
-                                .build()));
-    }
+	@GetMapping("/infor-product/{id}")
+	public ResponseEntity<ResponseObject> findProductById(@PathVariable(name = "id") long id) {
+		return Optional
+				.of(ResponseEntity.ok()
+						.body(new ResponseObject(HttpStatus.OK.name(), HttpStatus.OK.getReasonPhrase(),
+								productService.findById(id))))
+				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+						new ResponseObject(HttpStatus.NOT_FOUND.name(), HttpStatus.NOT_FOUND.getReasonPhrase(), "")));
+	}
 
+	@GetMapping("/search")
+	public ResponseEntity<ResponseObject> findProductById(@RequestParam(name = "name") String input,
+			@RequestParam(name = "quantity", required = false) Integer quantity) {
+		return ResponseEntity.ok()
+				.body(ResponseObject.builder()
+						.object(productService.findByNameProduct(input).stream()
+								.limit(quantity != null ? quantity : Long.MAX_VALUE))
+						.status(HttpStatus.OK.name()).message(HttpStatus.OK.getReasonPhrase()).build());
+	}
 
 }
