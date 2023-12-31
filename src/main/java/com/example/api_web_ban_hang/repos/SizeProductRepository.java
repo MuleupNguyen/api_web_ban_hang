@@ -21,4 +21,9 @@ public interface SizeProductRepository extends CrudRepository<SizeProduct, SizeP
             value = "INSERT INTO size_products (id_product, name_size, quantity_available) VALUES (:id_product, :name_size, :quantity)",
             nativeQuery = true)
     void insertSize(@Param("id_product") long idProduct, @Param("name_size") String nameSize, @Param("quantity") int quantity);
+
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM size_products WHERE id_product = :id", nativeQuery = true)
+    int clearSizes(@Param("id") long idProduct);
 }
