@@ -37,6 +37,21 @@ data class ProductDTO(
     val timeCreated: LocalDateTime?,
 )
 
+fun ProductDTO.toProduct(): Product = Product.builder()
+    .nameProduct(name)
+    .starReview(star ?: 0)
+    .idStatusProduct(0)
+    .listedPrice(listedPrice?.toBigDecimal())
+    .promotionalPrice(price?.toBigDecimal())
+    .brand(brand)
+    .typeProduct(type)
+    .idSex(if (gender == true) 1 else 0)
+    .timeCreated(timeCreated ?: LocalDateTime.now())
+    .comments(emptySet())
+    .imageProducts(emptySet())
+    .listSizes(emptySet())
+    .build()
+
 @RestController
 class ProductController(
     private val sizeProductRepository: SizeProductRepository,
@@ -68,21 +83,7 @@ class ProductController(
         @RequestPart("images") files: List<MultipartFile>,
         @RequestPart("product") productDTO: ProductDTO
     ) {
-        val product = Product().apply {
-            nameProduct = productDTO.name
-            starReview = productDTO.star ?: 0
-            idStatusProduct = 0
-            listedPrice = productDTO.listedPrice?.toBigDecimal()
-            promotionalPrice = productDTO.price?.toBigDecimal()
-            brand = productDTO.brand
-            typeProduct = productDTO.type
-            idSex = if (productDTO.gender == true) 1 else 0
-            timeCreated = LocalDateTime.now()
-            comments = emptySet()
-            imageProducts = emptySet()
-            listSizes = emptySet()
-        }
-
+        val product = productDTO.toProduct()
         val savedProduct = productRepository.save(product)
 
         productDTO.sizes?.let {
@@ -90,25 +91,63 @@ class ProductController(
                 sizeProductRepository.insertSize(savedProduct.id, size.name, size.quantity ?: 0)
             }
         }
+        saveImagesByProduct(savedProduct, files)
+    }
 
-        for (file in files) {
-            var fileName = file.hashCode() + Random.nextInt().hashCode()
-            if (fileName < 0) fileName = -fileName
-            val path = "images/$fileName"
+    @PutMapping("/api/products")
+    fun updateProduct(
+        @RequestParam("remainImages", required = false) remainImagePaths: List<String>?,
+        @RequestPart("images", required = false) files: List<MultipartFile>?,
+        @RequestPart("product") productDTO: ProductDTO
+    ) {
+        val product = productDTO.toProduct().apply { id = productDTO.id }
+        val savedProduct = productRepository.save(product)
 
-            Files.copy(file.inputStream, Path(path), StandardCopyOption.REPLACE_EXISTING)
-            val imageProduct = ImageProduct().apply {
-                setPath(path)
-                setProduct(savedProduct)
-                timeCreated = LocalDateTime.now()
+        sizeProductRepository.clearSizes(savedProduct.id)
+        productDTO.sizes?.let {
+            for (size in it) {
+                sizeProductRepository.insertSize(savedProduct.id, size.name, size.quantity ?: 0)
             }
-            imageProductRepository.save(imageProduct)
         }
+
+        val imageProducts = imageProductRepository.findByProductId(savedProduct.id)
+        if (remainImagePaths != null) {
+            outer@ for (image in imageProducts) {
+                for (remainPath in remainImagePaths) {
+                    if (remainPath.contains(image.path)) {
+                        continue@outer
+                    }
+                }
+                imageProductRepository.delete(image)
+            }
+        } else {
+            imageProductRepository.deleteAll(imageProducts)
+        }
+        saveImagesByProduct(savedProduct, files)
     }
 
     @GetMapping("/api/product/images/{id:.+}")
     fun getImage(@PathVariable("id") id: String?): ResponseEntity<ByteArray> {
         val image: ByteArray = Files.readAllBytes(File("images/$id").toPath())
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image)
+    }
+
+    private fun saveImagesByProduct(product: Product, files: List<MultipartFile>?) {
+        files?.let {
+            for (file in it) {
+                var fileName = file.hashCode() + Random.nextInt().hashCode()
+                if (fileName < 0) fileName = -fileName
+                val path = "images/$fileName"
+
+                Files.copy(file.inputStream, Path(path), StandardCopyOption.REPLACE_EXISTING)
+                val imageProduct = ImageProduct().apply {
+                    setPath(path)
+                    setProduct(product)
+                    timeCreated = LocalDateTime.now()
+                }
+                imageProductRepository.save(imageProduct)
+                println("SAVED")
+            }
+        }
     }
 }
