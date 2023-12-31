@@ -5,52 +5,35 @@ import com.example.api_web_ban_hang.services.interfaces.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-
 @RestController
 @RequestMapping("/api/products")
+@CrossOrigin("*")
 public class ProductApi {
-    // Ví dụ
-    @Autowired
-    private IProductService productService;
+	@Autowired
+	private IProductService productService;
 
-    @GetMapping
-    public ResponseObject findAllProducts() {
-        return new ResponseObject("OK", "Lấy ra danh sách sản phẩm!", productService.findAll());
-    }
+	@GetMapping("/infor-product/{id}")
+	public ResponseEntity<ResponseObject> findProductById(@PathVariable(name = "id") long id) {
+		return Optional
+				.of(ResponseEntity.ok()
+						.body(new ResponseObject(HttpStatus.OK.name(), HttpStatus.OK.getReasonPhrase(),
+								productService.findById(id))))
+				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+						new ResponseObject(HttpStatus.NOT_FOUND.name(), HttpStatus.NOT_FOUND.getReasonPhrase(), "")));
+	}
 
-    @GetMapping("/infor-product/{id}")
-    public ResponseEntity<ResponseObject> findProductById(@PathVariable(name = "id") long id) {
-        return Optional
-                .of(ResponseEntity.ok().body(new ResponseObject(
-                        HttpStatus.OK.name(),
-                        HttpStatus.OK.getReasonPhrase(),
-                        productService.findById(id))))
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(new ResponseObject(HttpStatus.NOT_FOUND.name(),
-                                HttpStatus.NOT_FOUND.getReasonPhrase(),
-                                "")));
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<ResponseObject> findProductById(@RequestParam(name = "name") String input) {
-        return Optional
-                .of(ResponseEntity.ok().body(ResponseObject.builder()
-                        .object(productService.findByNameProduct(input))
-                        .status(HttpStatus.OK.name())
-                        .message(HttpStatus.OK.getReasonPhrase())
-                        .build()))
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(ResponseObject.builder()
-                                .object("")
-                                .status(HttpStatus.NOT_FOUND.name())
-                                .message(HttpStatus.NOT_FOUND.getReasonPhrase())
-                                .build()));
-    }
-
+	@GetMapping("/search")
+	public ResponseEntity<ResponseObject> findProductById(@RequestParam(name = "name") String input,
+			@RequestParam(name = "quantity", required = false) Integer quantity) {
+		return ResponseEntity.ok()
+				.body(ResponseObject.builder()
+						.object(productService.findByNameProduct(input).stream()
+								.limit(quantity != null ? quantity : Long.MAX_VALUE))
+						.status(HttpStatus.OK.name()).message(HttpStatus.OK.getReasonPhrase()).build());
+	}
 
 }
