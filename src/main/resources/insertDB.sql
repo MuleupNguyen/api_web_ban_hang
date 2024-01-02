@@ -1,3 +1,4 @@
+USE web_ban_hang_api;
 
 INSERT INTO `brands` VALUES (1, 'NIKE');
 INSERT INTO `brands` VALUES (2, 'ADIDAS');
@@ -23,10 +24,12 @@ INSERT INTO `type_products` VALUES (3, 'ÁO THỦ MÔN');
 INSERT INTO `type_products` VALUES (4, 'ÁO FAN');
 
 DELIMITER //
+
 CREATE PROCEDURE GenerateProducts()
 BEGIN
   DECLARE i INT DEFAULT 1;
   DECLARE teams VARCHAR(255);
+  DECLARE status INT;
 
   WHILE i < 1000 DO
     -- Chọn một đội bóng châu Âu ngẫu nhiên
@@ -54,33 +57,40 @@ BEGIN
       ELSE 'Unknown Team'
 END;
 
-INSERT INTO `products` (
-    `id_product`,
-    `name_product`,
-    `star_review`,
-    `id_status_product`,
-    `listed_price`,
-    `promotional_price`,
-    `id_brand`,
-    `id_type_product`,
-    `id_sex`,
-    `time_created`
-) VALUES (
-             i,
-             teams,
-             FLOOR(RAND() * 5) + 1, -- Đánh giá từ 1 đến 5
-             1, -- Trạng thái sản phẩm
-             ROUND(RAND() * 500000 + 50000, 2), -- Giá niêm yết từ 50000 đến 550000
-             ROUND(RAND() * 5000 + 50000, 2), -- Giá khuyến mãi từ 0 đến 50000
-             FLOOR(RAND() * 3) + 1, -- ID thương hiệu từ 1 đến 3
-             FLOOR(RAND() * 4) + 1, -- ID loại sản phẩm từ 1 đến 4
-             FLOOR(RAND() * 2), -- Giới tính từ 0 (Nam) hoặc 1 (Nữ)
-             NOW() - INTERVAL FLOOR(RAND() * 365) DAY -- Ngày tạo từ 0 đến 365 ngày trước
-         );
+    -- Chọn một trạng thái ngẫu nhiên
+    SET status = CASE
+      WHEN RAND() < 0.33 THEN 1
+      WHEN RAND() < 0.66 THEN 2
+      ELSE 3
+END;
+
+    -- Thêm sản phẩm vào bảng products
+INSERT INTO `products` (`id_product`,
+                        `name_product`,
+                        `star_review`,
+                        `id_status_product`,
+                        `listed_price`,
+                        `promotional_price`,
+                        `id_brand`,
+                        `id_type_product`,
+                        `id_sex`,
+                        `time_created`)
+VALUES (i,
+        teams,
+        FLOOR(RAND() * 5) + 1, -- Đánh giá từ 1 đến 5
+        status, -- Trạng thái sản phẩm
+        ROUND(RAND() * 500000 + 50000, 2), -- Giá niêm yết từ 50000 đến 550000
+        ROUND(RAND() * 5000 + 50000, 2), -- Giá khuyến mãi từ 0 đến 50000
+        FLOOR(RAND() * 3) + 1, -- ID thương hiệu từ 1 đến 3
+        FLOOR(RAND() * 4) + 1, -- ID loại sản phẩm từ 1 đến 4
+        FLOOR(RAND() * 2), -- Giới tính từ 0 (Nam) hoặc 1 (Nữ)
+        NOW() - INTERVAL FLOOR(RAND() * 365) DAY -- Ngày tạo từ 0 đến 365 ngày trước
+       );
 
 SET i = i + 1;
 END WHILE;
 END //
+
 DELIMITER ;
 
 -- Gọi thủ tục để tạo sản phẩm
@@ -149,13 +159,13 @@ BEGIN
             WHEN 14 THEN 'https://product.hstatic.net/200000601263/product/276a48d6c03149a68f003235eb050997_00482d221df44feeb78e268de495ba37_1024x1024.jpg'
             WHEN 15 THEN 'https://product.hstatic.net/200000601263/product/ca8619562b794ec3a1161ef250e5d557_b3c72fa260c747d4b235d4e99f8f7e33_1024x1024.jpg'
          	WHEN 16 THEN 'https://product.hstatic.net/200000601263/product/2acdfbb8c3b74be09858d761c9a2c8ca_1d292fcbe5aa464d8d39dd8f5466e610_1024x1024.jpg'
-		  	WHEN 17 THEN 'https://product.hstatic.net/200000601263/product/6b85942bf7344ad3add124e11692df34_8ed3425b9bc54167ba4b50c7d28e0dba_1024x1024.jpg'
+		  		WHEN 17 THEN 'https://product.hstatic.net/200000601263/product/6b85942bf7344ad3add124e11692df34_8ed3425b9bc54167ba4b50c7d28e0dba_1024x1024.jpg'
 END;
         SET @quantity = FLOOR(1 + RAND() * (1000 - 1));
 
         -- Thêm bản ghi vào bảng size_products
-INSERT INTO image_products (path, id_product)
-VALUES (@path, @product_id);
+INSERT INTO image_products (path, id_product, time_created)
+VALUES (@path, @product_id, NOW() - INTERVAL FLOOR(RAND() * 365) DAY);
 
 -- Tăng biến đếm
 SET counter = counter + 1;
@@ -178,12 +188,13 @@ BEGIN
         -- Chọn một sản phẩm và size ngẫu nhiên
         SET @product_id = counter;
         -- Thêm bản ghi vào bảng size_products
-INSERT INTO history_price_products (id_price_product, id_product, `listed_price`,`promotional_price`)
+INSERT INTO history_price_products (id_price_product, id_product, `listed_price`,`promotional_price`, create_at)
 VALUES (
            @product_id,
            @product_id,
            ROUND(RAND() * 500000 + 50000, 2), -- Giá niêm yết từ 50000 đến 550000
-           ROUND(RAND() * 5000 + 50000, 2) -- Giá khuyến mãi từ 0 đến 50000
+           ROUND(RAND() * 5000 + 50000, 2), -- Giá khuyến mãi từ 0 đến 50000
+           NOW() - INTERVAL FLOOR(RAND() * 365) DAY
        );
 
 -- Tăng biến đếm
