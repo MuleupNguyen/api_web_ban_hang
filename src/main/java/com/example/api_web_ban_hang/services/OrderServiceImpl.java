@@ -28,4 +28,9 @@ public class OrderServiceImpl implements OrderService {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         return optionalOrder.orElse(null);
     }
+
+    @Override
+    public List<Order> getOrdersByPhoneNumber(String phoneNumber) {
+        return null;
+    }
 }

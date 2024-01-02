@@ -149,7 +149,7 @@ BEGIN
             WHEN 14 THEN 'https://product.hstatic.net/200000601263/product/276a48d6c03149a68f003235eb050997_00482d221df44feeb78e268de495ba37_1024x1024.jpg'
             WHEN 15 THEN 'https://product.hstatic.net/200000601263/product/ca8619562b794ec3a1161ef250e5d557_b3c72fa260c747d4b235d4e99f8f7e33_1024x1024.jpg'
          	WHEN 16 THEN 'https://product.hstatic.net/200000601263/product/2acdfbb8c3b74be09858d761c9a2c8ca_1d292fcbe5aa464d8d39dd8f5466e610_1024x1024.jpg'
-		  		WHEN 17 THEN 'https://product.hstatic.net/200000601263/product/6b85942bf7344ad3add124e11692df34_8ed3425b9bc54167ba4b50c7d28e0dba_1024x1024.jpg'
+		  	WHEN 17 THEN 'https://product.hstatic.net/200000601263/product/6b85942bf7344ad3add124e11692df34_8ed3425b9bc54167ba4b50c7d28e0dba_1024x1024.jpg'
 END;
         SET @quantity = FLOOR(1 + RAND() * (1000 - 1));
 
