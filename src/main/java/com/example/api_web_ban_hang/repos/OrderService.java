@@ -9,4 +9,5 @@ public interface OrderService {
     Order getOrderById(Long orderId);
 
     List<Order> getOrdersByPhoneNumber(String phoneNumber);
+    List<Order> getOrdersByStatus(Integer status);
 }

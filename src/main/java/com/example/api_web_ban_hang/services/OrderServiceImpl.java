@@ -31,6 +31,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getOrdersByPhoneNumber(String phoneNumber) {
-        return null;
+        Optional<List<Order>> optionalOrder = Optional.ofNullable(orderRepository.findByToPhone(phoneNumber));
+        return optionalOrder.orElse(null);
+    }
+
+    @Override
+    public List<Order> getOrdersByStatus(Integer status) {
+        Optional<List<Order>> optionalOrder = Optional.ofNullable(orderRepository.findByIdStatusOrder(status));
+        return optionalOrder.orElse(null);
     }
 }
