@@ -2,12 +2,15 @@ package com.example.api_web_ban_hang.services.imp;
 
 import com.example.api_web_ban_hang.dto.ProductDTO;
 import com.example.api_web_ban_hang.mapper.MapperProduct;
+import com.example.api_web_ban_hang.models.entities.Product;
 import com.example.api_web_ban_hang.repos.ProductRepository;
 import com.example.api_web_ban_hang.services.interfaces.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,4 +48,16 @@ public class ProductServiceImp implements IProductService {
                 .collect(Collectors.toList());
 
     }
+
+
+	@Override
+	public List<ProductDTO> findProductByBrandWithOptionSort(String name, Pageable pageable) {
+		return Optional.of(productRepository.findByBrand_NameBrand(name, pageable))
+				.orElse(Collections.emptyList())
+				.stream()
+				.sorted(Comparator.comparing(Product::getTimeCreated).reversed())
+				.map(MapperProduct::mapperProductToDTO)
+				.collect(Collectors.toList());
+	}
+    
 }
