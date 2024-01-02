@@ -13,4 +13,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p FROM Product p WHERE p.brand.nameBrand = :brandName")
     List<Product> findAllByBrand(@Param("brandName") String brandName);
+
+    Product findProductById(Long id);
 }

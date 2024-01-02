@@ -25,6 +25,6 @@ public class ImageProduct {
     @JoinColumn(name = "id_product")
     private Product product;
 
-    @Column(name = "time_created", nullable = false)
+    @Column(name = "time_created", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime timeCreated;
 }
