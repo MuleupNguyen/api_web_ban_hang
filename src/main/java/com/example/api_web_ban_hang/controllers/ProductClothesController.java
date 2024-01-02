@@ -11,10 +11,7 @@ import com.example.api_web_ban_hang.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,6 +20,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/products")
+@CrossOrigin("*")
 public class ProductClothesController {
     private final ProductService _productService;
 
@@ -61,13 +59,13 @@ public class ProductClothesController {
         try {
             var validFilter = new PaginationFilter(page, pageSize);
 
-            var data = _productService.getListProductByTypeAndStatus(TypeProduct.AO_DAU, StatusProduct.MOI, validFilter.current_page, validFilter.page_size);
+            var data = _productService.getListProductByTypeAndStatus(TypeProduct.AO_DAU, StatusProduct.HOT, validFilter.current_page, validFilter.page_size);
 
             if (data == null || data.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
 
-            var total_items = _productService.countProductsByTypeAndStatus(TypeProduct.AO_DAU, StatusProduct.MOI);
+            var total_items = _productService.countProductsByTypeAndStatus(TypeProduct.AO_DAU, StatusProduct.HOT);
 
             return ResponseEntity.ok(new PagedResponse_Ver1<>(data, validFilter.current_page, validFilter.page_size, total_items));
 
@@ -84,13 +82,13 @@ public class ProductClothesController {
         try {
             var validFilter = new PaginationFilter(page, pageSize);
 
-            var data = _productService.getListProductByTypeAndStatus(TypeProduct.AO_DAU, StatusProduct.MOI, validFilter.current_page, validFilter.page_size);
+            var data = _productService.getListProductByTypeAndStatus(TypeProduct.AO_DAU, StatusProduct.KHUYEN_MAI, validFilter.current_page, validFilter.page_size);
 
             if (data == null || data.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
 
-            var total_items = _productService.countProductsByTypeAndStatus(TypeProduct.AO_DAU, StatusProduct.MOI);
+            var total_items = _productService.countProductsByTypeAndStatus(TypeProduct.AO_DAU, StatusProduct.KHUYEN_MAI);
 
             return ResponseEntity.ok(new PagedResponse_Ver1<>(data, validFilter.current_page, validFilter.page_size, total_items));
 
