@@ -118,9 +118,13 @@ class ProductController(
                         continue@outer
                     }
                 }
+                Files.deleteIfExists(Path(image.path))
                 imageProductRepository.delete(image)
             }
         } else {
+            for (image in imageProducts) {
+                Files.deleteIfExists(Path(image.path))
+            }
             imageProductRepository.deleteAll(imageProducts)
         }
         saveImagesByProduct(savedProduct, files)
@@ -129,6 +133,10 @@ class ProductController(
 
     @DeleteMapping("/api/product/{id}")
     fun deleteProduct(@PathVariable("id") id: Long) {
+        val imageProducts = imageProductRepository.findByProductId(id)
+        for (image in imageProducts) {
+            Files.deleteIfExists(Path(image.path))
+        }
         productRepository.deleteById(id)
     }
 
@@ -152,7 +160,6 @@ class ProductController(
                     timeCreated = LocalDateTime.now()
                 }
                 imageProductRepository.save(imageProduct)
-                println("SAVED")
             }
         }
     }
