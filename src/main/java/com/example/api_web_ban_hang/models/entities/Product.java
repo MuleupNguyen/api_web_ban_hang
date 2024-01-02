@@ -1,7 +1,6 @@
 package com.example.api_web_ban_hang.models.entities;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -13,6 +12,10 @@ import java.util.Set;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 @Entity
 @Table(name = "products")
 public class Product {
@@ -56,4 +59,7 @@ public class Product {
 
     @OneToMany(mappedBy = "product", orphanRemoval = true)
     private Set<Comment> comments = new HashSet<>();
+    @OneToMany(mappedBy = "product", orphanRemoval = true, fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
+    private Set<SizeProduct> listSizes = new HashSet<>();
 }
