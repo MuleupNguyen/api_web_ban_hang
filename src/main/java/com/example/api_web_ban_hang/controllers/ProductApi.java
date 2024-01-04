@@ -40,12 +40,11 @@ public class ProductApi {
 
 	@GetMapping("/search")
 	public ResponseEntity<ResponseObject> findProductById(@RequestParam(name = "name") String input,
-			@RequestParam(name = "quantity", required = false) Integer quantity) {
+			@PageableDefault(size = 30, page = 0) @SortDefaults({
+				@SortDefault(sort = "listedPrice", direction = Sort.Direction.DESC) }) Pageable pageable) {
 		return ResponseEntity.ok()
-				.body(ResponseObject.builder()
-						.object(productService.findByNameProduct(input).stream()
-								.limit(quantity != null ? quantity : Long.MAX_VALUE))
-						.status(HttpStatus.OK.name()).message(HttpStatus.OK.getReasonPhrase()).build());
+				.body(new ResponseObject(HttpStatus.OK.name(), HttpStatus.OK.getReasonPhrase(),
+						productService.findByNameProduct(input, pageable)));
 	}
 
 	@GetMapping("/fitter-product-hot")
