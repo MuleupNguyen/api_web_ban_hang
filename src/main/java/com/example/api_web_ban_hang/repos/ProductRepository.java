@@ -19,5 +19,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByNameContainingIgnoreCase(@Param("keyword") String keyword, Pageable pageable);
     
     List<Product> findByBrand_NameBrand(String name,Pageable pageable);
+    List<Product> findByTypeProduct_IdOrBrand_IdOrIdSex(Integer idType, Long idBrand, Integer idSex,Pageable pageable);
+    List<Product> findByTypeProduct_IdAndBrand_IdAndIdSex(Integer idType, Long idBrand, Integer idSex,Pageable pageable);
+    List<Product> findByBrand_IdAndIdSex(Long idBrand, Integer idSex,Pageable pageable);
+    List<Product> findByTypeProduct_IdAndIdSex(Integer idType, Integer idSex,Pageable pageable);
+
+    List<Product> findByTypeProduct_IdAndBrand_Id(Integer idType, Long idBrand, Pageable pageable);
+
 
 }

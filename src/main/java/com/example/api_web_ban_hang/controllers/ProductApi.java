@@ -1,7 +1,12 @@
 package com.example.api_web_ban_hang.controllers;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
+import com.example.api_web_ban_hang.dto.ProductDTO;
+import com.example.api_web_ban_hang.models.entities.Product;
 import com.example.api_web_ban_hang.repos.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -75,4 +80,59 @@ public class ProductApi {
                         new ResponseObject(HttpStatus.NOT_FOUND.name(), HttpStatus.NOT_FOUND.getReasonPhrase(), "")))
                 ;
     }
+	@GetMapping("/filter")
+	public ResponseEntity<ResponseObject> findByTypeProduct_IdOrBrand_IdOrIdSex(
+			@RequestParam(name = "type", required = false) Integer idType,
+			@RequestParam(name = "brand", required = false) Long idBrand,
+			@RequestParam(name = "sex", required = false) Integer idSex,
+			@PageableDefault(size = 6, page = 0) @SortDefaults({
+					@SortDefault(sort = "listedPrice", direction = Sort.Direction.DESC)}) Pageable pageable) {
+		List<ProductDTO> products;
+
+		switch (countNonNullParams(idType, idBrand, idSex)) {
+			case 1:
+				products = handleSingleParam(idType, idBrand, idSex, pageable);
+				break;
+			case 2:
+				products = handleTwoParams(idType, idBrand, idSex, pageable);
+				break;
+			case 3:
+				products = handleThreeParams(idType, idBrand, idSex, pageable);
+				break;
+			default:
+				// Handle other cases if needed
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+						new ResponseObject(HttpStatus.BAD_REQUEST.name(), "Invalid number of parameters", ""));
+		}
+
+		return Optional.ofNullable(
+						ResponseEntity.ok()
+								.body(new ResponseObject("Ok", "OK", products)))
+				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+						new ResponseObject(HttpStatus.NOT_FOUND.name(), HttpStatus.NOT_FOUND.getReasonPhrase(), "")))
+				;
+	}
+
+	private int countNonNullParams(Object... params) {
+		return (int) Arrays.stream(params).filter(Objects::nonNull).count();
+	}
+
+	private List<ProductDTO> handleSingleParam(Integer idType, Long idBrand, Integer idSex, Pageable pageable) {
+		return productService.findByTypeProduct_IdOrBrand_IdOrIdSex(idType, idBrand, idSex, pageable);
+	}
+
+	private List<ProductDTO> handleTwoParams(Integer idType, Long idBrand, Integer idSex, Pageable pageable) {
+		if(idType == null){
+			return productService.findByBrand_IdAndIdSex(idBrand, idSex, pageable);
+		} else if (idBrand == null) {
+			return productService.findByTypeProduct_IdAndIdSex(idType, idSex, pageable);
+		} else if (idSex == null){
+			return productService.findByTypeProduct_IdAndBrand_Id(idType, idBrand, pageable);
+		}
+		return null;
+	}
+
+	private List<ProductDTO> handleThreeParams(Integer idType, Long idBrand, Integer idSex, Pageable pageable) {
+		return productService.findByTypeProduct_IdAndBrand_IdAndIdSex(idType,idBrand,idSex,pageable);
+	}
 }
