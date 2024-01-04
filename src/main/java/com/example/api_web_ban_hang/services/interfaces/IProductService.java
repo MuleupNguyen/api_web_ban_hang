@@ -10,7 +10,7 @@ public interface IProductService {
 
     ProductDTO findById(long id);
     List<ProductDTO> findByNameProduct(String name);
-    List<ProductDTO> findAll();
+    List<ProductDTO> findAll(Pageable pageable);
     List<ProductDTO> findProductByBrandWithOptionSort(String name,Pageable pageable);
 
 }

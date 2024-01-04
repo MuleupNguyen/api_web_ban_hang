@@ -40,9 +40,8 @@ public class ProductServiceImp implements IProductService {
     }
 
     @Override
-    public List<ProductDTO> findAll() {
-        return Optional.ofNullable(productRepository.findAll())
-                .orElse(Collections.emptyList())
+    public List<ProductDTO> findAll(Pageable pageable) {
+        return Optional.ofNullable(productRepository.findAll(pageable)).orElse(null)
                 .stream()
                 .map(MapperProduct::mapperProductToDTO)
                 .collect(Collectors.toList());
