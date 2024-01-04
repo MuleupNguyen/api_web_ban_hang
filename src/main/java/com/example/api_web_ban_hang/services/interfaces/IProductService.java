@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 public interface IProductService {
 
     ProductDTO findById(long id);
-    List<ProductDTO> findByNameProduct(String name);
+    List<ProductDTO> findByNameProduct(String name,Pageable pageable);
     List<ProductDTO> findAll(Pageable pageable);
     List<ProductDTO> findProductByBrandWithOptionSort(String name,Pageable pageable);
 
