@@ -40,9 +40,8 @@ public class ProductServiceImp implements IProductService {
     }
 
     @Override
-    public List<ProductDTO> findAll() {
-        return Optional.ofNullable(productRepository.findAll())
-                .orElse(Collections.emptyList())
+    public List<ProductDTO> findAll(Pageable pageable) {
+        return Optional.ofNullable(productRepository.findAll(pageable)).orElse(null)
                 .stream()
                 .map(MapperProduct::mapperProductToDTO)
                 .collect(Collectors.toList());
@@ -59,5 +58,57 @@ public class ProductServiceImp implements IProductService {
 				.map(MapperProduct::mapperProductToDTO)
 				.collect(Collectors.toList());
 	}
-    
+
+    @Override
+    public List<ProductDTO> findByTypeProduct_IdOrBrand_IdOrIdSex(Integer idType, Long idBrand, Integer idSex, Pageable pageable) {
+        return  Optional.of(productRepository.findByTypeProduct_IdOrBrand_IdOrIdSex(idType, idBrand, idSex, pageable))
+                .orElse(Collections.emptyList())
+                .stream()
+                .sorted(Comparator.comparing(Product::getTimeCreated).reversed())
+                .map(MapperProduct::mapperProductToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDTO> findByTypeProduct_IdAndBrand_IdAndIdSex(Integer idType, Long idBrand, Integer idSex, Pageable pageable) {
+        return  Optional.of(productRepository.findByTypeProduct_IdAndBrand_IdAndIdSex(idType, idBrand, idSex, pageable))
+                .orElse(Collections.emptyList())
+                .stream()
+                .sorted(Comparator.comparing(Product::getTimeCreated).reversed())
+                .map(MapperProduct::mapperProductToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDTO> findByBrand_IdAndIdSex(Long idBrand, Integer idSex, Pageable pageable) {
+        System.out.println("brand and sex");
+        return  Optional.of(productRepository.findByBrand_IdAndIdSex(idBrand, idSex, pageable))
+                .orElse(Collections.emptyList())
+                .stream()
+                .sorted(Comparator.comparing(Product::getTimeCreated).reversed())
+                .map(MapperProduct::mapperProductToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDTO> findByTypeProduct_IdAndIdSex(Integer idType, Integer idSex, Pageable pageable) {
+        System.out.println("type and sex");
+        return  Optional.of(productRepository.findByTypeProduct_IdAndIdSex(idType, idSex, pageable))
+                .orElse(Collections.emptyList())
+                .stream()
+                .sorted(Comparator.comparing(Product::getTimeCreated).reversed())
+                .map(MapperProduct::mapperProductToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDTO> findByTypeProduct_IdAndBrand_Id(Integer idType, Long idBrand, Pageable pageable) {
+        System.out.println("type and brand");
+        return  Optional.of(productRepository.findByTypeProduct_IdAndBrand_Id(idType, idBrand, pageable))
+                .orElse(Collections.emptyList())
+                .stream()
+                .sorted(Comparator.comparing(Product::getTimeCreated).reversed())
+                .map(MapperProduct::mapperProductToDTO)
+                .collect(Collectors.toList());
+    }
 }
