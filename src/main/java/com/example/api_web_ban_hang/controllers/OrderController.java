@@ -2,16 +2,18 @@ package com.example.api_web_ban_hang.controllers;
 
 import com.example.api_web_ban_hang.dto.OrderDTO;
 import com.example.api_web_ban_hang.dto.OrderDetailDTO;
+import com.example.api_web_ban_hang.models.OrderRequest;
 import com.example.api_web_ban_hang.models.ResponseObject;
 import com.example.api_web_ban_hang.models.entities.Order;
-import com.example.api_web_ban_hang.models.entities.OrderDetail;
-import com.example.api_web_ban_hang.repos.OrderService;
+import com.example.api_web_ban_hang.services.interfaces.OrderDetailService;
+import com.example.api_web_ban_hang.services.interfaces.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,12 +22,12 @@ import java.util.Optional;
 public class OrderController {
 
     @Autowired
-    private  OrderService orderService;
-  
-   @Autowired
+    private OrderService orderService;
+
+    @Autowired
     private OrderDetailService orderDetailService;
-  
-  @Transactional
+
+    @Transactional
     @PostMapping("/create-order")
     public ResponseEntity<ResponseObject> create(@RequestBody @Valid OrderRequest orderRequest) {
         Order order = orderService.addOrder(orderRequest);
@@ -44,25 +46,24 @@ public class OrderController {
     }
 
 
-//    http://localhost:8080/api/orders?phoneNumbers=0357695591
+    //    http://localhost:8080/api/orders?phoneNumbers=0357695591
     @GetMapping("/api/orders")
-    public ResponseEntity<ResponseObject> getOrdersByPhoneNumber(@RequestParam(name="phoneNumbers") String phoneNumber) {
+    public ResponseEntity<ResponseObject> getOrdersByPhoneNumber(@RequestParam(name = "phoneNumbers") String phoneNumber) {
         List<OrderDTO> orders = orderService.getOrdersByPhoneNumber(phoneNumber);
         return Optional.of(ResponseEntity.ok(
-                ResponseObject.builder().message(HttpStatus.OK.getReasonPhrase())
-                                .status( HttpStatus.OK.name()).object(orders).build()))
+                        ResponseObject.builder().message(HttpStatus.OK.getReasonPhrase())
+                                .status(HttpStatus.OK.name()).object(orders).build()))
                 .get()
                 ;
     }
 
 
-
     @GetMapping("/api/orders/status")
-    public ResponseEntity<ResponseObject> getOrderByStatus(@RequestParam(name="status") Integer status) {
+    public ResponseEntity<ResponseObject> getOrderByStatus(@RequestParam(name = "status") Integer status) {
         List<OrderDTO> orders = orderService.getOrdersByStatus(status);
         return Optional.of(ResponseEntity.ok(
                         ResponseObject.builder().message(HttpStatus.OK.getReasonPhrase())
-                                .status( HttpStatus.OK.name()).object(orders).build()))
+                                .status(HttpStatus.OK.name()).object(orders).build()))
                 .get()
                 ;
     }
@@ -72,21 +73,22 @@ public class OrderController {
         List<OrderDTO> orders = orderService.getAllOrders();
         return Optional.of(ResponseEntity.ok(
                         ResponseObject.builder().message(HttpStatus.OK.getReasonPhrase())
-                                .status( HttpStatus.OK.name()).object(orders).build()))
+                                .status(HttpStatus.OK.name()).object(orders).build()))
                 .get()
                 ;
     }
+
     @GetMapping("/api/orders/{id}")
     public ResponseEntity<ResponseObject> getOne(@PathVariable Long id) {
         OrderDTO orders = orderService.getOrderById(id);
         return Optional.of(ResponseEntity.ok(
                         ResponseObject.builder().message(HttpStatus.OK.getReasonPhrase())
-                                .status( HttpStatus.OK.name()).object(orders).build()))
+                                .status(HttpStatus.OK.name()).object(orders).build()))
                 .get()
                 ;
     }
 
-        @GetMapping("/api/order-details/{orderDetailId}")
+    @GetMapping("/api/order-details/{orderDetailId}")
     public ResponseEntity<ResponseObject> getOrderDetailById(@PathVariable Long orderDetailId) {
         OrderDetailDTO orderDetail = orderService.getOrderDetailById(orderDetailId);
 

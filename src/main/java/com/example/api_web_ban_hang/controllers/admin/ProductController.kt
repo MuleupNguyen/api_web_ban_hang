@@ -1,9 +1,10 @@
 package com.example.api_web_ban_hang.controllers.admin
 
-import com.example.api_web_ban_hang.models.entities.Brand
+import com.example.api_web_ban_hang.mapper.admin.ProductDTO
+import com.example.api_web_ban_hang.mapper.admin.toProduct
+import com.example.api_web_ban_hang.mapper.admin.toProductDTO
 import com.example.api_web_ban_hang.models.entities.ImageProduct
 import com.example.api_web_ban_hang.models.entities.Product
-import com.example.api_web_ban_hang.models.entities.TypeProduct
 import com.example.api_web_ban_hang.repos.ImageProductRepository
 import com.example.api_web_ban_hang.repos.ProductRepository
 import com.example.api_web_ban_hang.repos.SizeProductRepository
@@ -18,40 +19,6 @@ import java.time.LocalDateTime
 import kotlin.io.path.Path
 import kotlin.random.Random
 
-data class SizeDTO(
-    val name: String?,
-    val quantity: Int?
-)
-
-data class ProductDTO(
-    val id: Long?,
-    val name: String?,
-    val gender: Boolean?,
-    val star: Int?,
-    val brand: Brand?,
-    val type: TypeProduct?,
-    val listedPrice: Double?,
-    val price: Double?,
-    val sizes: List<SizeDTO>?,
-    val images: List<String>?,
-    val timeCreated: LocalDateTime?,
-)
-
-fun ProductDTO.toProduct(): Product = Product.builder()
-    .nameProduct(name)
-    .starReview(star ?: 0)
-    .idStatusProduct(0)
-    .listedPrice(listedPrice?.toBigDecimal())
-    .promotionalPrice(price?.toBigDecimal())
-    .brand(brand)
-    .typeProduct(type)
-    .idSex(if (gender == true) 1 else 0)
-    .timeCreated(timeCreated ?: LocalDateTime.now())
-    .comments(emptySet())
-    .imageProducts(emptySet())
-    .listSizes(emptySet())
-    .build()
-
 @RestController
 class ProductController(
     private val sizeProductRepository: SizeProductRepository,
@@ -60,23 +27,7 @@ class ProductController(
 ) {
 
     @GetMapping("/api/admin/products")
-    fun getProducts(): List<ProductDTO> {
-        return productRepository.findAll().map { product ->
-            ProductDTO(
-                id = product.id,
-                name = product.nameProduct,
-                gender = product.idSex == 1,
-                star = product.starReview,
-                brand = product.brand,
-                type = product.typeProduct,
-                listedPrice = product.listedPrice.toDouble(),
-                price = product.promotionalPrice.toDouble(),
-                sizes = sizeProductRepository.findByProductId(product.id).map { SizeDTO(it.id.nameSize, it.quantityAvailable) },
-                images = imageProductRepository.findByProductId(product.id).map { it.path },
-                timeCreated = product.timeCreated,
-            )
-        }
-    }
+    fun getProducts() = productRepository.findAll().map { it.toProductDTO(sizeProductRepository, imageProductRepository) }
 
     @PostMapping("/api/products")
     fun createProduct(
@@ -118,9 +69,13 @@ class ProductController(
                         continue@outer
                     }
                 }
+                Files.deleteIfExists(Path(image.path))
                 imageProductRepository.delete(image)
             }
         } else {
+            for (image in imageProducts) {
+                Files.deleteIfExists(Path(image.path))
+            }
             imageProductRepository.deleteAll(imageProducts)
         }
         saveImagesByProduct(savedProduct, files)
@@ -129,6 +84,10 @@ class ProductController(
 
     @DeleteMapping("/api/product/{id}")
     fun deleteProduct(@PathVariable("id") id: Long) {
+        val imageProducts = imageProductRepository.findByProductId(id)
+        for (image in imageProducts) {
+            Files.deleteIfExists(Path(image.path))
+        }
         productRepository.deleteById(id)
     }
 
@@ -152,7 +111,6 @@ class ProductController(
                     timeCreated = LocalDateTime.now()
                 }
                 imageProductRepository.save(imageProduct)
-                println("SAVED")
             }
         }
     }
