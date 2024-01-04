@@ -126,6 +126,12 @@ class ProductController(
         saveImagesByProduct(savedProduct, files)
     }
 
+
+    @DeleteMapping("/api/product/{id}")
+    fun deleteProduct(@PathVariable("id") id: Long) {
+        productRepository.deleteById(id)
+    }
+
     @GetMapping("/api/product/images/{id:.+}")
     fun getImage(@PathVariable("id") id: String?): ResponseEntity<ByteArray> {
         val image: ByteArray = Files.readAllBytes(File("images/$id").toPath())
