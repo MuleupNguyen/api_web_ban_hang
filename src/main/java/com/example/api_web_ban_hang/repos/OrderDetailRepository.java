@@ -10,10 +10,5 @@ import java.util.List;
 
 @Repository
 public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> {
-    static List<OrderDetail> findByOrderId(Long orderId) {
-        return null;
-    }
-
-public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> {
 
 }
