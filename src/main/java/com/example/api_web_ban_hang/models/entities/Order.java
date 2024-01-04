@@ -6,6 +6,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -121,5 +123,8 @@ public class Order {
 
     @Column(name = "id_status_order")
     private Integer idStatusOrder;
+
+    @OneToMany(mappedBy = "order")
+    private Set<OrderDetail> listOrderDatail = new HashSet<>();
 
 }
