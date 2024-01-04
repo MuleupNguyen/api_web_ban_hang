@@ -21,6 +21,27 @@ public class OrderController {
 
     @Autowired
     private  OrderService orderService;
+  
+   @Autowired
+    private OrderDetailService orderDetailService;
+  
+  @Transactional
+    @PostMapping("/create-order")
+    public ResponseEntity<ResponseObject> create(@RequestBody @Valid OrderRequest orderRequest) {
+        Order order = orderService.addOrder(orderRequest);
+
+
+        orderRequest.getList_order_detail().stream().forEach(o -> {
+            orderDetailService.addOrderDetail(o, order);
+        });
+        return Optional.of(ResponseEntity.ok().body(
+                new ResponseObject(
+                        HttpStatus.OK.name(),
+                        HttpStatus.OK.getReasonPhrase(),
+                        orderRequest
+                )
+        )).get();
+    }
 
 
 //    http://localhost:8080/api/orders?phoneNumbers=0357695591

@@ -4,6 +4,7 @@ import com.example.api_web_ban_hang.models.entities.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+
 import java.util.List;
 
 @Repository
@@ -12,3 +13,4 @@ List<Order> findByIdStatusOrder(Integer id);
     List<Order> findByToPhone(String phone);
 
 }
+

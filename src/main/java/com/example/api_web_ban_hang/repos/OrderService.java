@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface OrderService {
     List<OrderDTO> getAllOrders();
 
+   Order getOrderById(Long orderId);
 
     List<OrderDTO> getOrdersByPhoneNumber(String phoneNumber);
     List<OrderDTO> getOrdersByStatus(Integer status);
