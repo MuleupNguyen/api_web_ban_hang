@@ -3,6 +3,7 @@ package com.example.api_web_ban_hang.models.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -25,6 +26,6 @@ public class ImageProduct {
     @JoinColumn(name = "id_product")
     private Product product;
 
-    @Column(name = "time_created", nullable = false)
+    @Column(name = "time_created", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime timeCreated;
 }
