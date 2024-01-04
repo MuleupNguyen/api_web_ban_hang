@@ -1,5 +1,6 @@
 package com.example.api_web_ban_hang.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,10 +16,11 @@ public class OrderDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_order_detail")
     private Long id;
-
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "id_order", nullable = false)
     private Order order;
+    @JsonIgnore
 
     @ManyToOne
     @JoinColumn(name = "id_product", nullable = false)
@@ -32,4 +34,6 @@ public class OrderDetail {
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
+
+
 }
