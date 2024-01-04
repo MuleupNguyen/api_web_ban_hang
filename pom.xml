@@ -77,6 +77,12 @@
             <version>1.18.30</version>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.22</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- Thêm dependency cho Swagger -->
         <dependency>
             <groupId>io.springfox</groupId>
@@ -88,7 +94,6 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>2.9.2</version>
         </dependency>
-        
     </dependencies>
 
     <build>
@@ -96,6 +101,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+
+                <version>${project.parent.version}</version>
+
                 <configuration>
 					<image>
 						<builder>paketobuildpacks/builder-jammy-base:latest</builder>
@@ -107,6 +115,7 @@
 						</exclude>
 					</excludes>
 				</configuration>
+
             </plugin>
            <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
