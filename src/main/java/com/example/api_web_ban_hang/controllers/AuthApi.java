@@ -45,7 +45,7 @@ public class AuthApi {
 
             User user = (User) authentication.getPrincipal();
             String accessToken = jwtUtil.generateAccessToken(user);
-            AuthResponse response = new AuthResponse(user.getUsername(), accessToken, "24 hours");
+            AuthResponse response = new AuthResponse(user.getUsername(), user.getFullname(), accessToken, "24 hours");
 
             return ResponseEntity.ok().body(new ResponseObject("OK", "Đăng nhập thành công", response));
 
