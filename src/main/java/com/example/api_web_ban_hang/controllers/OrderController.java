@@ -2,15 +2,19 @@ package com.example.api_web_ban_hang.controllers;
 
 import com.example.api_web_ban_hang.dto.OrderDTO;
 import com.example.api_web_ban_hang.dto.OrderDetailDTO;
+import com.example.api_web_ban_hang.models.OrderRequest;
 import com.example.api_web_ban_hang.models.ResponseObject;
 import com.example.api_web_ban_hang.models.entities.Order;
 import com.example.api_web_ban_hang.models.entities.OrderDetail;
-import com.example.api_web_ban_hang.repos.OrderService;
+import com.example.api_web_ban_hang.services.interfaces.OrderDetailService;
+import com.example.api_web_ban_hang.services.interfaces.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +24,7 @@ import java.util.Optional;
 public class OrderController {
 
     @Autowired
-    private  OrderService orderService;
+    private OrderService orderService;
   
    @Autowired
     private OrderDetailService orderDetailService;
