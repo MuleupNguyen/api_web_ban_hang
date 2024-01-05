@@ -21,5 +21,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Modifying
     @Query(value = "UPDATE orders SET id_status_order = :statusId WHERE id_order = :orderId", nativeQuery = true)
     int updateOrderStatus(@Param("orderId") int orderId, @Param("statusId") int statusId);
+
+    @Query(value = "SELECT IFNULL(SUM(total_price), 0) FROM orders WHERE DATE_FORMAT(time_order, '%Y-%m') = :year_and_month", nativeQuery = true)
+    double getTotalPriceByYearAndMonth(@Param("year_and_month") String yearAndMonth);
 }
 
