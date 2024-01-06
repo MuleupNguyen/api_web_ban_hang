@@ -3,21 +3,17 @@ package com.example.api_web_ban_hang.controllers.admin
 import com.example.api_web_ban_hang.mapper.admin.ProductDTO
 import com.example.api_web_ban_hang.mapper.admin.toProduct
 import com.example.api_web_ban_hang.mapper.admin.toProductDTO
-import com.example.api_web_ban_hang.models.entities.ImageProduct
-import com.example.api_web_ban_hang.models.entities.Product
 import com.example.api_web_ban_hang.repos.ImageProductRepository
 import com.example.api_web_ban_hang.repos.ProductRepository
 import com.example.api_web_ban_hang.repos.SizeProductRepository
-import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.mizosoft.methanol.*
+import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
-import java.time.LocalDateTime
-import kotlin.io.path.Path
-import kotlin.random.Random
+import java.net.http.HttpRequest.BodyPublishers
+import java.net.http.HttpResponse
+
 
 @RestController
 class ProductController(
@@ -26,92 +22,50 @@ class ProductController(
     private val imageProductRepository: ImageProductRepository
 ) {
 
+    @GetMapping("/api/admin/products-amount")
+    fun getProductsAmount(): Long = productRepository.count()
+
     @GetMapping("/api/admin/products")
-    fun getProducts() = productRepository.findAll().map { it.toProductDTO(sizeProductRepository, imageProductRepository) }
+    fun getProducts(pageable: Pageable?): List<ProductDTO> {
+        return productRepository.findAll(pageable ?: Pageable.unpaged()).toList().map { it.toProductDTO() }
+    }
 
     @PostMapping("/api/products")
     fun createProduct(
-        @RequestPart("images") files: List<MultipartFile>,
+        @RequestPart("images") files: List<MultipartFile>?,
         @RequestPart("product") productDTO: ProductDTO
     ) {
-        val product = productDTO.toProduct()
-        val savedProduct = productRepository.save(product)
-
-        productDTO.sizes?.let {
-            for (size in it) {
-                sizeProductRepository.insertSize(savedProduct.id, size.name, size.quantity ?: 0)
-            }
-        }
-        saveImagesByProduct(savedProduct, files)
+        updateProduct(files, productDTO)
     }
 
     @PutMapping("/api/products")
     fun updateProduct(
-        @RequestParam("remainImages", required = false) remainImagePaths: List<String>?,
         @RequestPart("images", required = false) files: List<MultipartFile>?,
-        @RequestPart("product") productDTO: ProductDTO
+        @RequestPart("product") productDto: ProductDTO
     ) {
-        val product = productDTO.toProduct().apply { id = productDTO.id }
-        val savedProduct = productRepository.save(product)
-
-        sizeProductRepository.clearSizes(savedProduct.id)
-        productDTO.sizes?.let {
+        val savedProduct = productRepository.save(productDto.toProduct())
+        sizeProductRepository.deleteByProduct_Id(savedProduct.id)
+        productDto.sizes?.let {
             for (size in it) {
                 sizeProductRepository.insertSize(savedProduct.id, size.name, size.quantity ?: 0)
             }
         }
 
-        val imageProducts = imageProductRepository.findByProductId(savedProduct.id)
-        if (remainImagePaths != null) {
-            outer@ for (image in imageProducts) {
-                for (remainPath in remainImagePaths) {
-                    if (remainPath.contains(image.path)) {
-                        continue@outer
-                    }
-                }
-                Files.deleteIfExists(Path(image.path))
-                imageProductRepository.delete(image)
+        imageProductRepository.deleteByProduct_Id(savedProduct.id)
+        files?.let { multipartFiles ->
+            for (file in multipartFiles) {
+                val imagePart = MoreBodyPublishers.ofMediaType(BodyPublishers.ofInputStream { file.inputStream }, MediaType.IMAGE_ANY)
+                val multipartBody = MultipartBodyPublisher.newBuilder()
+                    .formPart("image", file.bytes.hashCode().toString(), MoreBodyPublishers.ofMediaType(imagePart, MediaType.IMAGE_ANY))
+                    .build()
+                val request = MutableRequest.POST("https://api.imgbb.com/1/upload?key=7cee02feb70a6ee7728e0e025519ebd8", multipartBody)
+                val response = Methanol.create().send(request, HttpResponse.BodyHandlers.ofString())
+                val map = ObjectMapper().readValue(response.body(), Map::class.java)
+                imageProductRepository.insertImage((map["data"] as Map<*, *>)["url"].toString(), savedProduct.id)
             }
-        } else {
-            for (image in imageProducts) {
-                Files.deleteIfExists(Path(image.path))
-            }
-            imageProductRepository.deleteAll(imageProducts)
         }
-        saveImagesByProduct(savedProduct, files)
     }
-
 
     @DeleteMapping("/api/product/{id}")
-    fun deleteProduct(@PathVariable("id") id: Long) {
-        val imageProducts = imageProductRepository.findByProductId(id)
-        for (image in imageProducts) {
-            Files.deleteIfExists(Path(image.path))
-        }
-        productRepository.deleteById(id)
-    }
-
-    @GetMapping("/api/product/images/{id:.+}")
-    fun getImage(@PathVariable("id") id: String?): ResponseEntity<ByteArray> {
-        val image: ByteArray = Files.readAllBytes(File("images/$id").toPath())
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image)
-    }
-
-    private fun saveImagesByProduct(product: Product, files: List<MultipartFile>?) {
-        files?.let {
-            for (file in it) {
-                var fileName = file.hashCode() + Random.nextInt().hashCode()
-                if (fileName < 0) fileName = -fileName
-                val path = "images/$fileName"
-
-                Files.copy(file.inputStream, Path(path), StandardCopyOption.REPLACE_EXISTING)
-                val imageProduct = ImageProduct().apply {
-                    setPath(path)
-                    setProduct(product)
-                    timeCreated = LocalDateTime.now()
-                }
-                imageProductRepository.save(imageProduct)
-            }
-        }
-    }
+    fun deleteProduct(@PathVariable("id") id: Long) = productRepository.deleteById(id)
 }

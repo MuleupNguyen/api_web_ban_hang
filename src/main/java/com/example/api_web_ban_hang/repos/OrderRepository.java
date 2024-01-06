@@ -24,5 +24,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query(value = "SELECT IFNULL(SUM(total_price), 0) FROM orders WHERE DATE_FORMAT(time_order, '%Y-%m') = :year_and_month", nativeQuery = true)
     double getTotalPriceByYearAndMonth(@Param("year_and_month") String yearAndMonth);
+
+    @Query(value = "SELECT SUM(total_price) FROM orders", nativeQuery = true)
+    long getTotalRevenue();
+
+    long countByIdStatusOrder(int idStatusOrder);
 }
 
