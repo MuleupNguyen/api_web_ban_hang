@@ -22,7 +22,6 @@ public class Comment {
     @Column(name = "content")
     private String content;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_user")
     private User user;

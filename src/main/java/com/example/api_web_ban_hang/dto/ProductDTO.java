@@ -19,7 +19,7 @@ public class ProductDTO {
     private BigDecimal promotional_price;
     private List<ImageDTO> list_image;
     private List<SizeDTO> list_size;
-    private List<Comment> list_comment;
+    private List<CommentDTO> list_comment;
     private String brand;
     private String type;
 
