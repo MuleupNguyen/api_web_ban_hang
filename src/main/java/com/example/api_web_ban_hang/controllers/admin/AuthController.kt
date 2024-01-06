@@ -19,9 +19,7 @@ class AuthController {
     @PostMapping("/api/admin/sign_up")
     fun signUp(@RequestBody admin: Admin): Admin {
         if (adminRepository.findAll().any { it.email == admin.email }) throw ResponseStatusException(HttpStatus.CONFLICT, "Email already exists.")
-        return adminRepository.save(admin.apply {
-            timeCreated = LocalDateTime.now()
-        })
+        return adminRepository.save(admin.apply { timeCreated = LocalDateTime.now() })
     }
 
     @PostMapping("/api/admin/sign_in")

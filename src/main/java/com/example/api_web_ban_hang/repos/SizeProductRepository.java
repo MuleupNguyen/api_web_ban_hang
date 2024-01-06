@@ -23,7 +23,5 @@ public interface SizeProductRepository extends CrudRepository<SizeProduct, SizeP
     void insertSize(@Param("id_product") long idProduct, @Param("name_size") String nameSize, @Param("quantity") int quantity);
 
     @Transactional
-    @Modifying
-    @Query(value = "DELETE FROM size_products WHERE id_product = :id", nativeQuery = true)
-    int clearSizes(@Param("id") long idProduct);
+    int deleteByProduct_Id(long productId);
 }

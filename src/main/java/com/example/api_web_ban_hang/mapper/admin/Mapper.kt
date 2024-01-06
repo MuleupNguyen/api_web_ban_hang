@@ -1,17 +1,17 @@
 package com.example.api_web_ban_hang.mapper.admin
 
-import com.example.api_web_ban_hang.models.entities.*
-import com.example.api_web_ban_hang.repos.ImageProductRepository
-import com.example.api_web_ban_hang.repos.OrderDetailRepository
-import com.example.api_web_ban_hang.repos.SizeProductRepository
-import com.example.api_web_ban_hang.repos.UserRepository
+import com.example.api_web_ban_hang.models.entities.Brand
+import com.example.api_web_ban_hang.models.entities.Order
+import com.example.api_web_ban_hang.models.entities.Product
+import com.example.api_web_ban_hang.models.entities.TypeProduct
+import java.math.BigDecimal
 import java.time.LocalDateTime
-import kotlin.jvm.optionals.getOrNull
 
-class UserDTO(
-    val id: Long?,
-    val name: String,
-    val profileImage: String?
+class OrderStatusStatistic(
+    val id: Int?,
+    val name: String?,
+    val quantity: Int?,
+    val percentage: Float?
 )
 
 class OrderItemDTO(
@@ -23,7 +23,7 @@ class OrderItemDTO(
 
 class OrderDTO(
     val id: Long?,
-    val user: UserDTO?,
+    val toPhone: String?,
     val orderDate: LocalDateTime?,
     val statusId: Int?,
     val totalPrice: Double?,
@@ -39,7 +39,7 @@ data class SizeDTO(
 data class ProductDTO(
     val id: Long?,
     val name: String?,
-    val gender: Boolean?,
+    val gender: Int?,
     val star: Int?,
     val brand: Brand?,
     val type: TypeProduct?,
@@ -51,61 +51,48 @@ data class ProductDTO(
 )
 
 fun ProductDTO.toProduct(): Product = Product.builder()
-    .nameProduct(name)
+    .id(id)
+    .nameProduct(name ?: "Sample name")
     .starReview(star ?: 0)
-    .idStatusProduct(0)
-    .listedPrice(listedPrice?.toBigDecimal())
-    .promotionalPrice(price?.toBigDecimal())
+    .idStatusProduct(1)
+    .listedPrice(listedPrice?.toBigDecimal() ?: BigDecimal.ZERO)
+    .promotionalPrice(price?.toBigDecimal() ?: BigDecimal.ZERO)
     .brand(brand)
     .typeProduct(type)
-    .idSex(if (gender == true) 1 else 0)
+    .idSex(gender ?: 0)
     .timeCreated(timeCreated ?: LocalDateTime.now())
     .comments(emptySet())
-    .imageProducts(emptySet())
-    .listSizes(emptySet())
+    .imageProducts(emptySet()) // Set later
+    .listSizes(emptySet()) // Set later
     .build()
 
-fun Product.toProductDTO(
-    sizeProductRepository: SizeProductRepository,
-    imageProductRepository: ImageProductRepository
-): ProductDTO = ProductDTO(
+fun Product.toProductDTO() = ProductDTO(
     id = id,
     name = nameProduct,
-    gender = idSex == 1,
+    gender = idSex,
     star = starReview,
     brand = brand,
     type = typeProduct,
     listedPrice = listedPrice.toDouble(),
     price = promotionalPrice.toDouble(),
-    sizes = sizeProductRepository.findByProductId(id).map { SizeDTO(it.id.nameSize, it.quantityAvailable) },
-    images = imageProductRepository.findByProductId(id).map { it.path },
+    sizes = listSizes.map { SizeDTO(name = it.size.nameSize, quantity = it.quantityAvailable) },
+    images = imageProducts.map { it.path },
     timeCreated = timeCreated,
 )
 
-fun User.toUserDTO(): UserDTO = UserDTO(
-    id = id,
-    name = fullname,
-    profileImage = pathImgAvatar
-)
-
-fun Order.toOrderDTO(
-    userRepository: UserRepository,
-    orderDetailRepository: OrderDetailRepository,
-    sizeProductRepository: SizeProductRepository,
-    imageProductRepository: ImageProductRepository
-): OrderDTO = OrderDTO(
+fun Order.toOrderDTO() = OrderDTO(
     id = idOrder,
-    user = userRepository.findByPhone(fromPhone).getOrNull()!!.toUserDTO(),
+    toPhone = toPhone,
     orderDate = timeOrder,
     statusId = idStatusOrder,
     totalPrice = totalPrice.toDouble(),
     address = toAddress,
-    orderItems = orderDetailRepository.findByOrder_IdOrder(idOrder).map { orderDetail ->
+    orderItems = listOrderDatail.map {
         OrderItemDTO(
-            product = orderDetail.product.toProductDTO(sizeProductRepository, imageProductRepository),
-            size = orderDetail.nameSize,
-            quantity = orderDetail.quantity,
-            totalPrice = orderDetail.price.toDouble(),
+            product = it.product.toProductDTO(),
+            size = it.nameSize,
+            quantity = it.quantity,
+            totalPrice = it.price.toDouble(),
         )
     }
 )
