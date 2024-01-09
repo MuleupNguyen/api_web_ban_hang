@@ -1,5 +1,6 @@
 package com.example.api_web_ban_hang.mapper;
 
+import com.example.api_web_ban_hang.dto.CommentDTO;
 import com.example.api_web_ban_hang.dto.ImageDTO;
 import com.example.api_web_ban_hang.dto.ProductDTO;
 import com.example.api_web_ban_hang.dto.SizeDTO;
@@ -27,7 +28,7 @@ public class MapperProduct {
                 .type(product.getTypeProduct().getNameType())
                 .list_image(mapperImageToDTO(product.getImageProducts()))
                 .list_size(mappperSizeToDTO(product.getListSizes()))
-                .list_comment(new ArrayList<>(product.getComments()))
+                .list_comment(mappperCommentToDTO(product.getComments()))
                 .build();
         return build;
     }
@@ -48,7 +49,12 @@ public class MapperProduct {
                     .quantity_available(size.getQuantityAvailable())
                     .build();
         }).collect(Collectors.toList());
+    }public static List<CommentDTO> mappperCommentToDTO(Set<Comment> listComment){
+        return listComment.stream().map(c->{
+            return new CommentDTO(c.getId(),c.getStar(),c.getContent(),c.getUser().getFullname());
+        }).collect(Collectors.toList());
     }
+
 
 
 }
